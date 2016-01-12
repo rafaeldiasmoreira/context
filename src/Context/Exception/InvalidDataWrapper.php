@@ -1,6 +1,6 @@
 <?php
 
-namespace Context\Exceptions;
+namespace Context\Exception;
 
 /**
  * Exception that is thrown when a data wrapper is invalid

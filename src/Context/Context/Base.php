@@ -102,6 +102,10 @@ class Base implements ContextInterface
      */
     public function getHash()
     {
+        if (!$this->hash) {
+            $this->hash = $this->generateHash();
+        }
+
         return $this->hash;
     }
 
@@ -112,5 +116,16 @@ class Base implements ContextInterface
     {
         $this->hash = $hash;
         return $this;
+    }
+
+
+    /**
+     * Generate a unique hash
+     *
+     * @return string
+     */
+    protected function generateHash()
+    {
+        return sha1(uniqid(mt_rand(), true));
     }
 }

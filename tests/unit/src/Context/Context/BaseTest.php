@@ -85,4 +85,12 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             $this->context->getHash()
         );
     }
+
+    public function testGetRandomHash()
+    {
+        $this->assertSame(
+            40,
+            strlen($this->context->getHash())
+        );
+    }
 }
