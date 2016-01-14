@@ -21,29 +21,6 @@ interface ContextInterface
      */
     public function getDataWrapper();
 
-     /**
-      * Get the list of validators attached to the context
-      *
-      * @return \SplObjectStorage
-      */
-    public function getValidators();
-
-     /**
-      * Attach a new validator the context
-      *
-      * @param Validator\ValidatorInterface $validator
-      * @return ContextInterface
-      */
-    public function attachValidator(Validator\ValidatorInterface $validator);
-
-     /**
-      * Detach a validator from the context
-      *
-      * @param Validator\ValidatorInterface $validator
-      * @return void
-      */
-    public function detachValidator(Validator\ValidatorInterface $validator);
-
     /**
      * Get hash information
      *
@@ -58,4 +35,18 @@ interface ContextInterface
      * @return ContextInterface
      */
     public function setHash($hash);
+
+    /**
+     * Asks for the validator manager to validate the current dataWrapper
+     *
+     * @return bool
+     */
+    public function validate();
+
+    /**
+     * Get the current validator manager
+     *
+     * @return Validator\Manager
+     */
+    public function getValidatorManager();
 }

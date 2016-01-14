@@ -29,23 +29,25 @@ class Base implements ContextInterface
     protected $dataWrapper;
 
     /**
-     * List of validators attached to the context
+     * Validator Manager
      *
-     * @var \SplObjectStorage
+     * @var Validator\Manager
      */
-    protected $validators;
+    protected $validatorManager;
 
     /**
      * @param string $contextName
-     * @param \Context\DataWrapper\DataWrapperInterface $dataWrapper
+     * @param \Validator\Manager $validatorManager
+     * @param \DataWrapper\DataWrapperInterface $dataWrapper
      */
     public function __construct(
         $contextName,
-        \Context\DataWrapper\DataWrapperInterface $dataWrapper
+        Validator\Manager $validatorManager,
+        DataWrapper\DataWrapperInterface $dataWrapper
     ) {
-        $this->validators  = new \SplObjectStorage;
-        $this->name        = $contextName;
-        $this->dataWrapper = $dataWrapper;
+        $this->validatorManager  = $validatorManager;
+        $this->name              = $contextName;
+        $this->dataWrapper       = $dataWrapper;
     }
 
     /**
@@ -67,34 +69,30 @@ class Base implements ContextInterface
     /**
      * {@inheritdoc}
      */
-    public function setDataWrapper(DataWrapper\DataWrapperInterface $dataWrapper)
+    public function getValidatorManager()
     {
-        $this->dataWrapper = $dataWrapper;
+        return $this->validatorManager;
+    }
+
+    /**
+     * Sets a validator manager
+     *
+     * @param Validator\Manager $validatorManager
+     * @return Context\Base
+     */
+    public function setValidatorManager(Validator\Manager $validatorManager)
+    {
+        $this->validatorManager = $validatorManager;
         return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getValidators()
+    public function setDataWrapper(DataWrapper\DataWrapperInterface $dataWrapper)
     {
-        return $this->validators;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attachValidator(Validator\ValidatorInterface $validator)
-    {
-        $this->validators->attach($validator);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function detachValidator(Validator\ValidatorInterface $validator)
-    {
-        $this->validators->detach($validator);
+        $this->dataWrapper = $dataWrapper;
+        return $this;
     }
 
     /**
@@ -118,6 +116,13 @@ class Base implements ContextInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function validate()
+    {
+        return $this->validatorManager->validate($this->dataWrapper);
+    }
 
     /**
      * Generate a unique hash

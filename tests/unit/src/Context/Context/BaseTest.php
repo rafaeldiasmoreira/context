@@ -5,13 +5,19 @@ namespace Context\Context;
 class BaseTest extends \PHPUnit_Framework_TestCase
 {
     private $context;
+    private $validatorManager;
     private $contextName = 'venture.product.create';
     private $dataWrapper;
 
     public function setup()
     {
-        $this->dataWrapper  = $this->getMock('Context\DataWrapper\DataWrapperInterface');
-        $this->context = new Base($this->contextName, $this->dataWrapper);
+        $this->dataWrapper      = $this->getMock('Context\DataWrapper\DataWrapperInterface');
+        $this->validatorManager = $this->getMock('Context\Validator\Manager');
+        $this->context = new Base(
+            $this->contextName,
+            $this->validatorManager, 
+            $this->dataWrapper
+        );
     }
 
     public function testGetName()
@@ -44,32 +50,22 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testGetValidators()
+    public function testGetValidatorManager()
     {
-        $this->assertInstanceOf(
-            'SplObjectStorage', 
-            $this->context->getValidators()
+        $this->assertSame(
+            $this->validatorManager,
+            $this->context->getValidatorManager()
         );
     }
 
-     public function testAttachValidator()
-     {
-         $validator = $this->getMock('Context\Validator\ValidatorInterface');
-         $this->context->attachValidator($validator);
-         $validators = $this->context->getValidators();
-
-         $this->assertTrue($validators->contains($validator));
-     }
-
-    public function testDetachValidators()
+    public function testValidate()
     {
-         $validator = $this->getMock('Context\Validator\ValidatorInterface');
+        $this->validatorManager
+            ->expects($this->once())
+            ->method('validate')
+            ->willReturn(true);
 
-         $this->context->attachValidator($validator);
-         $this->assertTrue($this->context->getValidators()->contains($validator));
-
-         $this->context->detachValidator($validator);
-         $this->assertFalse($this->context->getValidators()->contains($validator));
+        $this->assertTrue($this->context->validate());
     }
 
     public function testGetAndSetHash()
