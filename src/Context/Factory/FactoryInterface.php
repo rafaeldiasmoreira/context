@@ -22,6 +22,7 @@ interface FactoryInterface
      * Factory class
      *
      * @return void
+     * @throws \InvalidArgumentException
      */
     public function prepareOverwrite();
 
